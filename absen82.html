@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi Online 8.2</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+  <style>
+    /* Reset dan body */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #cfe0fc, #ffffff);
+        color: #0b3d91;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container utama */
+    .container {
+        max-width: 500px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 30px 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-3px);
+    }
+
+    /* Judul */
+    h1 {
+        margin-bottom: 25px;
+        font-weight: 700;
+        color: #0b3d91;
+    }
+
+    /* Dropdown nama & input password/alasan */
+    select, input[type="password"], #reason-input {
+        font-size: 18px;
+        padding: 14px 20px;
+        margin: 10px 0;
+        border-radius: 12px;
+        border: 1px solid #0b3d91;
+        outline: none;
+        width: 100%;
+        box-sizing: border-box;
+        transition: all 0.2s ease-in-out;
+    }
+
+    select {
+        background-color: #e6f0ff;
+        color: #0b3d91;
+        cursor: pointer;
+    }
+
+    /* Input admin login */
+    #admin-username, #admin-password {
+        font-size: 18px;
+        padding: 14px 20px; /* sama seperti dropdown & tombol */
+        margin: 10px 0;
+        border-radius: 12px;
+        border: 1px solid #0b3d91;
+        width: 100%; /* full lebar */
+        box-sizing: border-box;
+        outline: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+    #admin-username:hover, #admin-password:hover {
+        transform: scale(1.02);
+        border-color: #0a357a;
+    }
+
+    select:hover, input[type="password"]:hover, #reason-input:hover {
+        transform: scale(1.02);
+        border-color: #0a357a;
+    }
+
+    /* Tombol umum (login, logout, absen) */
+    button, .btn-primary, .btn-secondary, .status-buttons button {
+        font-family: 'Poppins', sans-serif;
+        font-size: 18px;
+        padding: 14px 0;
+        margin: 10px 0;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+        width: 100%;
+        font-weight: 600;
+    }
+
+    /* Tombol absensi */
+    .status-buttons button {
+        width: 30%;
+        margin: 10px 1%;
+        color: white;
+        font-weight: 700;
+    }
+
+    .btn-hadir { background-color: #28a745; }
+    .btn-izin { background-color: #ffc107; color: #0b3d91; }
+    .btn-sakit { background-color: #dc3545; }
+
+    .status-buttons button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
+    /* Tombol primary & secondary */
+    .btn-primary { background-color: #0b3d91; color: white; }
+    .btn-primary:hover { background-color: #0a357a; }
+
+    .btn-secondary { background-color: #ffffff; color: #0b3d91; border: 2px solid #0b3d91; }
+    .btn-secondary:hover { background-color: #e6f0ff; }
+
+    /* Input alasan */
+    #reason-input {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* Tabel admin */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    table, th, td {
+        border: 1px solid #0b3d91;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #cfe0fc;
+        font-weight: 600;
+    }
+
+    /* Status warna */
+    .status-Hadir { color: #28a745; font-weight: bold; }
+    .status-Izin { color: #ffc107; font-weight: bold; }
+    .status-Sakit { color: #dc3545; font-weight: bold; }
+    .status-Alfa { color: #6c757d; font-weight: bold; }
+
+    /* Pesan error / info */
+    .message {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #dc3545;
+    }
+
+    /* Responsif untuk layar kecil */
+    @media (max-width: 600px){
+        .status-buttons button {
+            width: 90%;
+            margin: 8px 0;
+        }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Home/Login -->
+<div class="container" id="home-screen">
+  <h1>Absensi Online 8.2</h1>
+  
+  <select id="username">
+    <option value="">Pilih Nama</option>
+    <option value="Achmad Nurfadilah Kurniawan">Achmad Nurfadilah Kurniawan</option>
+    <option value="Adam Febriansyah">Adam Febriansyah</option>
+    <option value="Aina Arnetha Shallakezia">Aina Arnetha Shallakezia</option>
+    <option value="Aldi Perdana">Aldi Perdana</option>
+    <option value="Andika Wardana">Andika Wardana</option>
+    <option value="Annabelle Putri Prabowo">Annabelle Putri Prabowo</option>
+    <option value="Annisa Humayroh">Annisa Humayroh</option>
+    <option value="Arkana Riva Fawwaz">Arkana Riva Fawwaz</option>
+    <option value="Ataya Fadilah">Ataya Fadilah</option>
+    <option value="Auliana Putri Fryawan">Auliana Putri Fryawan</option>
+    <option value="Azam Al-Masyah">Azam Al-Masyah</option>
+    <option value="Cecep Andika Pratama">Cecep Andika Pratama</option>
+    <option value="Dafa Arifki Ramadan">Dafa Arifki Ramadan</option>
+    <option value="Dwi Halina Rosalin">Dwi Halina Rosalin</option>
+    <option value="Fadhil Joanda Rizky">Fadhil Joanda Rizky</option>
+    <option value="Faiz Rifano">Faiz Rifano</option>
+    <option value="Hafiizah Khaerunisa">Hafiizah Khaerunisa</option>
+    <option value="Kautsar Syathir Nugroho">Kautsar Syathir Nugroho</option>
+    <option value="Keanu Amar Khalifah">Keanu Amar Khalifah</option>
+    <option value="Mirza Ibad Anugrah">Mirza Ibad Anugrah</option>
+    <option value="Muhammad Abdurrifai Syahadat">Muhammad Abdurrifai Syahadat</option>
+    <option value="Muhammad Ali Akbar">Muhammad Ali Akbar</option>
+    <option value="Mutiara Yusup">Mutiara Yusup</option>
+    <option value="Nesya Noer Azizah">Nesya Noer Azizah</option>
+    <option value="Poppy Aliya">Poppy Aliya</option>
+    <option value="Prudence Davina Ruus">Prudence Davina Ruus</option>
+    <option value="Radit Ardian">Radit Ardian</option>
+    <option value="Raffy Rifky Firmamsyah">Raffy Rifky Firmamsyah</option>
+    <option value="Rayi Syalika Al Fatunnisa">Rayi Syalika Al Fatunnisa</option>
+    <option value="Restiani Eka Putri">Restiani Eka Putri</option>
+    <option value="Saffinah Zahira">Saffinah Zahira</option>
+    <option value="Syifa Nifta Aulia">Syifa Nifta Aulia</option>
+    <option value="Tsuraya Raida Zahir">Tsuraya Raida Zahir</option>
+  </select>
+
+  <input type="password" id="password" placeholder="Password">
+  <button class="btn-primary" onclick="login()">Login Siswa</button>
+  <button class="btn-secondary" onclick="showAdminLogin()">Login Admin</button>
+  <p id="home-message" class="message"></p>
+</div>
+
+<!-- Siswa Absen -->
+<div class="container" id="attendance-screen" style="display:none;">
+  <h1>Halo, <span id="student-name"></span></h1>
+  <p>Pilih status absensi hari ini:</p>
+  
+  <div class="status-buttons">
+    <button class="btn-hadir" onclick="showReasonInput('Hadir')">Hadir</button>
+    <button class="btn-izin" onclick="showReasonInput('Izin')">Izin</button>
+    <button class="btn-sakit" onclick="showReasonInput('Sakit')">Sakit</button>
+  </div>
+
+  <div id="reason-container" style="display:none; margin-top:10px;">
+    <input type="text" id="reason-input" placeholder="Masukkan alasan">
+    <button class="btn-primary" onclick="submitAttendance(reasonStatus)">Kirim</button>
+  </div>
+
+  <p id="attendance-message" class="message"></p>
+  
+  <button class="btn-secondary" onclick="logout()">Logout</button>
+</div>
+
+<!-- Admin Login -->
+<div class="container" id="admin-login-screen" style="display:none;">
+  <h1>Login Admin</h1>
+  <input type="text" id="admin-username" placeholder="Username Admin">
+  <input type="password" id="admin-password" placeholder="Password Admin">
+  <button class="btn-primary" onclick="loginAdmin()">Login</button>
+  <p id="admin-login-message" class="message"></p>
+  <button class="btn-secondary" onclick="backToHome()">Kembali</button>
+</div>
+
+<!-- Admin Dashboard -->
+<div class="container" id="admin-dashboard" style="display:none;">
+  <h1>Dashboard Admin</h1>
+  <button class="btn-secondary" onclick="logout()">Logout</button>
+  <table id="attendance-table">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Status</th>
+        <th>Alasan</th>
+        <th>Waktu</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  // Variabel global
+  let reasonStatus = '';
+  let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+
+  // Fungsi untuk mendapatkan password siswa (3 huruf pertama nama + 123)
+  function getStudentPassword(studentName) {
+    // Ambil 3 huruf pertama dari nama, hilangkan spasi
+    const firstThreeLetters = studentName.replace(/\s/g, '').substring(0, 3).toLowerCase();
+    return firstThreeLetters + '123';
+  }
+
+  // Fungsi untuk login siswa
+  function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const message = document.getElementById('home-message');
+    
+    // Validasi sederhana
+    if (!username) {
+      message.textContent = 'Pilih nama terlebih dahulu!';
+      return;
+    }
+    
+    if (!password) {
+      message.textContent = 'Masukkan password!';
+      return;
+    }
+    
+    // Password berdasarkan 3 huruf pertama nama + 123
+    const expectedPassword = getStudentPassword(username);
+    
+    if (password !== expectedPassword) {
+      message.textContent = 'Password salah! Password Anda: ' + expectedPassword;
+      return;
+    }
+    
+    // Login berhasil
+    message.textContent = '';
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('attendance-screen').style.display = 'block';
+    document.getElementById('student-name').textContent = username;
+    
+    // Reset form
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+  }
+
+  // Fungsi untuk menampilkan input alasan
+  function showReasonInput(status) {
+    reasonStatus = status;
+    document.getElementById('reason-container').style.display = 'block';
+    
+    // Jika Hadir, sembunyikan input alasan
+    if (status === 'Hadir') {
+      document.getElementById('reason-input').style.display = 'none';
+    } else {
+      document.getElementById('reason-input').style.display = 'block';
+      document.getElementById('reason-input').value = '';
+    }
+  }
+
+  // Fungsi untuk submit absensi
+  function submitAttendance(status) {
+    const studentName = document.getElementById('student-name').textContent;
+    const reason = document.getElementById('reason-input').value;
+    const message = document.getElementById('attendance-message');
+    
+    // Validasi untuk Izin dan Sakit
+    if ((status === 'Izin' || status === 'Sakit') && !reason) {
+      message.textContent = 'Harap masukkan alasan!';
+      return;
+    }
+    
+    // Simpan data absensi
+    const attendanceRecord = {
+      name: studentName,
+      status: status,
+      reason: status === 'Hadir' ? '-' : reason,
+      timestamp: new Date().toLocaleString('id-ID')
+    };
+    
+    attendanceData.push(attendanceRecord);
+    localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+    
+    // Tampilkan pesan sukses
+    message.textContent = `Absensi ${status} berhasil!`;
+    message.style.color = '#28a745';
+    
+    // Reset form
+    document.getElementById('reason-container').style.display = 'none';
+    
+    // Kembali ke halaman login setelah 2 detik
+    setTimeout(() => {
+      logout();
+    }, 2000);
+  }
+
+  // Fungsi untuk logout
+  function logout() {
+    document.getElementById('home-screen').style.display = 'block';
+    document.getElementById('attendance-screen').style.display = 'none';
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('admin-dashboard').style.display = 'none';
+    
+    // Reset pesan
+    document.getElementById('home-message').textContent = '';
+    document.getElementById('attendance-message').textContent = '';
+    document.getElementById('admin-login-message').textContent = '';
+  }
+
+  // Fungsi untuk menampilkan login admin
+  function showAdminLogin() {
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('admin-login-screen').style.display = 'block';
+  }
+
+  // Fungsi untuk login admin
+  function loginAdmin() {
+    const username = document.getElementById('admin-username').value;
+    const password = document.getElementById('admin-password').value;
+    const message = document.getElementById('admin-login-message');
+    
+    // Validasi login admin
+    if (username === 'BuMutiaCantik' && password === '123567') {
+      message.textContent = '';
+      document.getElementById('admin-login-screen').style.display = 'none';
+      document.getElementById('admin-dashboard').style.display = 'block';
+      
+      // Tampilkan data absensi
+      displayAttendanceData();
+    } else {
+      message.textContent = 'Username atau password admin salah!';
+    }
+  }
+
+  // Fungsi untuk menampilkan data absensi di dashboard admin
+  function displayAttendanceData() {
+    const tableBody = document.querySelector('#attendance-table tbody');
+    tableBody.innerHTML = '';
+    
+    if (attendanceData.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada data absensi</td></tr>';
+      return;
+    }
+    
+    attendanceData.forEach(record => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${record.name}</td>
+        <td class="status-${record.status}">${record.status}</td>
+        <td>${record.reason}</td>
+        <td>${record.timestamp}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Fungsi untuk kembali ke halaman utama
+  function backToHome() {
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('home-screen').style.display = 'block';
+  }
+</script>
+</body>
+</html>
